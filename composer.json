@@ -23,7 +23,7 @@
   },
   "autoload": {
     "psr-4": {
-      "WorldtidesAPI\\": "src/"
+      "Worldtides\\": "src/"
     }
   },
   "scripts": {
