@@ -6,7 +6,7 @@ namespace Worldtides;
 
 class API
 {
-    public function __construct(private readonly string $apikey)
+    public function __construct(protected readonly string $apikey)
     {
     }
 }
