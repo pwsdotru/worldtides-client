@@ -9,3 +9,5 @@ use Worldtides\API;
 $conf = parse_ini_file(__DIR__ . "/.env");
 
 $tides = new API($conf["apikey"]);
+
+$tides->setDate("2026-05-01");
