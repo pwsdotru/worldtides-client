@@ -10,4 +10,5 @@ $conf = parse_ini_file(__DIR__ . "/.env");
 
 $tides = new API($conf["apikey"]);
 
-$tides->setDate("2026-05-01");
+$tides->setDate(date("Y-m-d"))
+    ->setPoint("7.8900", " 98.3983");

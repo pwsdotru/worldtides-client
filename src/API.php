@@ -19,4 +19,11 @@ class API
         $this->params["date"] = $date;
         return $this;
     }
+
+    public function setPoint(string $lat, string $lon): self
+    {
+        $this->params["lat"] = $lat;
+        $this->params["lon"] = $lon;
+        return $this;
+    }
 }
