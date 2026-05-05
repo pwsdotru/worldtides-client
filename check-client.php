@@ -10,5 +10,6 @@ $conf = parse_ini_file(__DIR__ . "/.env");
 
 $tides = new API($conf["apikey"]);
 
-$tides->setDate(date("Y-m-d"))
-    ->setPoint("7.8900", " 98.3983");
+$result = $tides->setDate(date("Y-m-d"))
+    ->setPoint("7.8333", "98.4167")
+    ->getHeights();
