@@ -30,8 +30,8 @@ class API
 
     public function setPoint(string $lat, string $lon): self
     {
-        $this->params["lat"] = $lat;
-        $this->params["lon"] = $lon;
+        $this->params["lat"] = (float)$lat;
+        $this->params["lon"] = (float)$lon;
         return $this;
     }
 
@@ -39,7 +39,7 @@ class API
     {
         $result = [];
         $url = sprintf(
-            "%s?heights&key=%s&date=%s&lat=%s&lon=%s&days=%d",
+            "%s?heights&key=%s&date=%s&lat=%.06f&lon=%.06f&days=%d",
             self::ENDPOINT,
             $this->apikey,
             $this->params["date"],
