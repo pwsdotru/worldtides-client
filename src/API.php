@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Worldtides;
 
 use GuzzleHttp\Client;
+use Psr\Http\Client\ClientInterface;
 
 class API
 {
     private const ENDPOINT = "https://www.worldtides.info/api/v3";
 
-    private $client = null;
+    private ?ClientInterface $client = null;
     private array $params = [];
 
-    public function __construct(protected readonly string $apikey, $client = null)
+    public function __construct(protected readonly string $apikey, ?ClientInterface $client = null)
     {
         if (null === $client) {
             $this->client = new Client();
@@ -30,8 +31,10 @@ class API
 
     public function setPoint(string $lat, string $lon): self
     {
-        $this->params["lat"] = (float)$lat;
-        $this->params["lon"] = (float)$lon;
+        if (is_numeric($lat) && is_numeric($lon)) {
+            $this->params["lat"] = (float)$lat;
+            $this->params["lon"] = (float)$lon;
+        }
         return $this;
     }
 
