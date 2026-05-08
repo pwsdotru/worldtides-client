@@ -54,6 +54,24 @@ final class APITest extends TestCase
         $this->assertEqualsWithDelta($expected_lon, $params["lon"], 0.01);
     }
 
+    public static function setPointErrorProvider(): array
+    {
+        return [
+            ["7.8333", "erorr"],
+            ["test", "95"],
+            ["7.8333", "95 ñ.ø."],
+            ["w34", "n45"],
+        ];
+    }
+
+    #[DataProvider('setPointErrorProvider')]
+    public function testSetPointException(string $lat, string $lon): void
+    {
+        $this->expectException("Worldtides\Exception");
+        $obj = new API("empty");
+        $obj->setPoint($lat, $lon);
+    }
+
     protected function getPrivateProperty(object $object, string $propertyName)
     {
         $reflectionClass = new ReflectionClass($object);

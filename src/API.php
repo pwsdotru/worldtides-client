@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Worldtides;
 
 use GuzzleHttp\Client;
+use Worldtides\Exception\InvalidFormatException;
 use Psr\Http\Client\ClientInterface;
 
 class API
@@ -29,11 +30,20 @@ class API
         return $this;
     }
 
+    /**
+    * Set geo coordinates
+    * @param string $lat
+    * @param string $lon
+    * @return self
+    * @throws InvalidFormatException
+    */
     public function setPoint(string $lat, string $lon): self
     {
         if (is_numeric($lat) && is_numeric($lon)) {
             $this->params["lat"] = (float)$lat;
             $this->params["lon"] = (float)$lon;
+        } else {
+            throw new InvalidFormatException(sprintf("Incorrect format for point coordinates (%s, %s)", $lat, $lon));
         }
         return $this;
     }
