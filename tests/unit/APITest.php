@@ -18,14 +18,14 @@ final class APITest extends TestCase
     }
 
 
-    public static function setDataProvider(): array
+    public static function setDateProvider(): array
     {
         return [
             ["2026-05-01", "2026-05-01"],
         ];
     }
 
-    #[DataProvider('setDataProvider')]
+    #[DataProvider('setDateProvider')]
     public function testSetDate(string $input, string $expected): void
     {
         $obj = new API("empty");
@@ -33,6 +33,21 @@ final class APITest extends TestCase
         $params = $this->getPrivateProperty($obj, "params");
         $this->assertArrayHasKey("date", $params);
         $this->assertEquals($expected, $params["date"]);
+    }
+
+    public static function setDateErrorProvider(): array
+    {
+        return [
+            ["222-1-2026"],
+        ];
+    }
+
+    #[DataProvider('setDateErrorProvider')]
+    public function testSetDateException(string $date): void
+    {
+        $this->expectException("Worldtides\Exception\InvalidFormatException");
+        $obj = new API("empty");
+        $obj->setDate($date);
     }
 
     public static function setPointProvider(): array
@@ -59,7 +74,7 @@ final class APITest extends TestCase
         return [
             ["7.8333", "erorr"],
             ["test", "95"],
-            ["7.8333", "95 ñ.ø."],
+            ["7.8333", "95 Ñ.Ñˆ."],
             ["w34", "n45"],
         ];
     }
@@ -67,7 +82,7 @@ final class APITest extends TestCase
     #[DataProvider('setPointErrorProvider')]
     public function testSetPointException(string $lat, string $lon): void
     {
-        $this->expectException("Worldtides\Exception");
+        $this->expectException("Worldtides\Exception\InvalidFormatException");
         $obj = new API("empty");
         $obj->setPoint($lat, $lon);
     }

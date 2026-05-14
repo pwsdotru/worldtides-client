@@ -26,7 +26,11 @@ class API
 
     public function setDate(string $date): self
     {
-        $this->params["date"] = $date;
+        $timestamp = strtotime($date);
+        if ($timestamp === false) {
+            throw new InvalidFormatException(sprintf("Incorrect format for date (%s)", $date));
+        }
+        $this->params["date"] = date('Y-m-d', $timestamp);
         return $this;
     }
 
