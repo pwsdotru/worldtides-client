@@ -12,4 +12,9 @@ $tides = new API($conf["apikey"]);
 
 $result = $tides->setDate(date("Y-m-d"))
     ->setPoint("7.8333", "98.4167")
-    ->getHeights();
+    ->getImage();
+
+$pos = strpos($result, ",");
+if (false !== $pos) {
+    file_put_contents("test.png", base64_decode(substr($result, $pos + 1)));
+}

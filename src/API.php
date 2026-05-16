@@ -24,6 +24,12 @@ class API
         }
     }
 
+    /**
+    * Set date for API call
+    * @param string $date
+    * @return self
+    * @throws InvalidFormatException
+    */
     public function setDate(string $date): self
     {
         $timestamp = strtotime($date);
@@ -69,5 +75,27 @@ class API
         $response = $this->client->request("GET", $url);
         echo($response->getBody());
         return $result;
+    }
+
+    public function getImage(int $days = 7, array $params = []): string
+    {
+        $url = sprintf(
+            "%s?heights&plot&key=%s&date=%s&lat=%.06f&lon=%.06f&days=%d",
+            self::ENDPOINT,
+            $this->apikey,
+            $this->params["date"],
+            $this->params["lat"],
+            $this->params["lon"],
+            $days
+        );
+        echo($url . "\n");
+        $response = $this->client->request("GET", $url, ["stream" => true]);
+        $body = $response->getBody();
+        $raw = "";
+        while (!$body->eof()) {
+            $raw .= $body->read(102400);
+        }
+        $data = json_decode($raw, true);
+        return $data["plot"];
     }
 }
