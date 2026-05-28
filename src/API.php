@@ -61,16 +61,7 @@ class API
     public function getHeights(int $days = 7): array
     {
         $result = [];
-        $url = sprintf(
-            "%s?heights&key=%s&date=%s&lat=%.06f&lon=%.06f&days=%d",
-            self::ENDPOINT,
-            $this->apikey,
-            $this->params["date"],
-            $this->params["lat"],
-            $this->params["lon"],
-            $days
-        );
-
+        $url = $this->buildBasicUrl($days);
         echo($url);
         $response = $this->client->request("GET", $url);
         echo($response->getBody());
@@ -79,15 +70,7 @@ class API
 
     public function getImage(int $days = 7, array $params = []): string
     {
-        $url = sprintf(
-            "%s?heights&plot&key=%s&date=%s&lat=%.06f&lon=%.06f&days=%d",
-            self::ENDPOINT,
-            $this->apikey,
-            $this->params["date"],
-            $this->params["lat"],
-            $this->params["lon"],
-            $days
-        );
+        $url = $this->buildBasicdUrl($days, "heights&plot");
         echo($url . "\n");
         $response = $this->client->request("GET", $url, ["stream" => true]);
         $body = $response->getBody();
@@ -98,4 +81,17 @@ class API
         $data = json_decode($raw, true);
         return $data["plot"];
     }
+
+    private function buildBasicdUrl(int $days = 7, string $call = "heights"): string
+	{
+		return sprintf("%s?%s&key=%s&date=%s&lat=%.06f&lon=%.06f&days=%d",
+			self::ENDPOINT,
+			$call,
+			$this->apikey,
+			$this->params["date"],
+			$this->params["lat"],
+			$this->params["lon"],
+			$days
+		);
+	}
 }
