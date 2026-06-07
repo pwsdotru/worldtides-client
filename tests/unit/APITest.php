@@ -87,6 +87,17 @@ final class APITest extends TestCase
         $obj->setPoint($lat, $lon);
     }
 
+    public function testBuildBasicUrl(): void
+    {
+        $obj = new API("test-key");
+        $obj->setPoint("12", "15")->setDate("2026-01-01");
+        $reflectionClass = new ReflectionClass($obj);
+        $method = $reflectionClass->getMethod("buildBasicUrl");
+        $method->setAccessible(true);
+        $url = $method->invoke($obj);
+        $this->assertEquals("https://www.worldtides.info/api/v3?heights&key=test-key&date=2026-01-01&lat=12.000000&lon=15.000000&days=7", $url);
+    }
+
     protected function getPrivateProperty(object $object, string $propertyName)
     {
         $reflectionClass = new ReflectionClass($object);

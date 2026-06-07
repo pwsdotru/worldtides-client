@@ -62,7 +62,6 @@ class API
     {
         $result = [];
         $url = $this->buildBasicUrl($days);
-        echo($url);
         $response = $this->client->request("GET", $url);
         echo($response->getBody());
         return $result;
@@ -70,8 +69,7 @@ class API
 
     public function getImage(int $days = 7, array $params = []): string
     {
-        $url = $this->buildBasicdUrl($days, "heights&plot");
-        echo($url . "\n");
+        $url = $this->buildBasicUrl($days, "heights&plot");
         $response = $this->client->request("GET", $url, ["stream" => true]);
         $body = $response->getBody();
         $raw = "";
@@ -82,7 +80,7 @@ class API
         return $data["plot"];
     }
 
-    private function buildBasicdUrl(int $days = 7, string $call = "heights"): string
+    private function buildBasicUrl(int $days = 7, string $call = "heights"): string
 	{
 		return sprintf("%s?%s&key=%s&date=%s&lat=%.06f&lon=%.06f&days=%d",
 			self::ENDPOINT,
