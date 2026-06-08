@@ -6,6 +6,7 @@ namespace Worldtides;
 
 use GuzzleHttp\Client;
 use Worldtides\Exception\InvalidFormatException;
+use Worldtides\Exception\EmptyArgumentException;
 use Psr\Http\Client\ClientInterface;
 
 class API
@@ -81,15 +82,24 @@ class API
     }
 
     private function buildBasicUrl(int $days = 7, string $call = "heights"): string
-	{
-		return sprintf("%s?%s&key=%s&date=%s&lat=%.06f&lon=%.06f&days=%d",
-			self::ENDPOINT,
-			$call,
-			$this->apikey,
-			$this->params["date"],
-			$this->params["lat"],
-			$this->params["lon"],
-			$days
-		);
-	}
+    {
+        if (empty($this->params["date"])) {
+            throw new EmptyArgumentException("You should set date for request");
+        }
+
+        if (empty($this->params["lat"]) || empty($this->params["lon"])) {
+            throw new EmptyArgumentException(("You should set coordinates for request"));
+        }
+
+        return sprintf(
+            "%s?%s&key=%s&date=%s&lat=%.06f&lon=%.06f&days=%d",
+            self::ENDPOINT,
+            $call,
+            $this->apikey,
+            $this->params["date"],
+            $this->params["lat"],
+            $this->params["lon"],
+            $days
+        );
+    }
 }
