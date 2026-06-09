@@ -71,6 +71,9 @@ class API
     public function getImage(int $days = 7, array $params = []): string
     {
         $url = $this->buildBasicUrl($days, "heights&plot");
+        foreach ($params as $key => $value) {
+            $url .= "&" . $key . "=" . urlencode((string)$value);
+        }
         $response = $this->client->request("GET", $url, ["stream" => true]);
         $body = $response->getBody();
         $raw = "";

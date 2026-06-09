@@ -12,7 +12,7 @@ $tides = new API($conf["apikey"]);
 
 $result = $tides->setDate(date("Y-m-d"))
     ->setPoint("7.8333", "98.4167")
-    ->getImage();
+    ->getImage(7, ["timemode" => 24]);
 
 $pos = strpos($result, ",");
 if (false !== $pos) {
