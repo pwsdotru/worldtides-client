@@ -61,18 +61,16 @@ class API
 
     public function getHeights(int $days = 7): array
     {
-        $result = [];
         $url = $this->buildBasicUrl($days);
         $response = $this->client->request("GET", $url);
-        echo($response->getBody());
-        return $result;
+        return json_decode($response->getBody(), true);
     }
 
     public function getImage(int $days = 7, array $params = []): string
     {
         $url = $this->buildBasicUrl($days, "heights&plot");
         foreach ($params as $key => $value) {
-            $url .= "&" . $key . "=" . urlencode((string)$value);
+            $url .= sprintf("&%s=%s", (string)$key, urlencode((string)$value));
         }
         $response = $this->client->request("GET", $url, ["stream" => true]);
         $body = $response->getBody();
