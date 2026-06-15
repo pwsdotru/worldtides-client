@@ -14,7 +14,4 @@ $result = $tides->setDate(date("Y-m-d"))
     ->setPoint("7.8333", "98.4167")
     ->getImage(7, ["timemode" => 24]);
 
-$pos = strpos($result, ",");
-if (false !== $pos) {
-    file_put_contents("test.png", base64_decode(substr($result, $pos + 1)));
-}
+file_put_contents("test.png", $result);

@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use Worldtides\Exception\InvalidFormatException;
 use Worldtides\Exception\EmptyArgumentException;
 use Psr\Http\Client\ClientInterface;
+use Worldtides\Exception\InvalidResponseException;
 
 class API
 {
@@ -79,7 +80,12 @@ class API
             $raw .= $body->read(102400);
         }
         $data = json_decode($raw, true);
-        return $data["plot"];
+        $img = $data["plot"];
+        $pos = strpos($img, ",");
+        if (false === $pos) {
+            throw new InvalidResponseException("Incorrect format for \"plot\" properties");
+        }
+        return  base64_decode(substr($img, $pos + 1));
     }
 
     private function buildBasicUrl(int $days = 7, string $call = "heights"): string
