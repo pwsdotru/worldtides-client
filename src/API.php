@@ -63,8 +63,7 @@ class API
     public function getHeights(int $days = 7): array
     {
         $url = $this->buildBasicUrl($days);
-        $response = $this->client->request("GET", $url);
-        return json_decode($response->getBody(), true);
+        return $this->makeRequest($url);
     }
 
     public function getImage(int $days = 7, array $params = []): string
@@ -73,19 +72,29 @@ class API
         foreach ($params as $key => $value) {
             $url .= sprintf("&%s=%s", (string)$key, urlencode((string)$value));
         }
-        $response = $this->client->request("GET", $url, ["stream" => true]);
-        $body = $response->getBody();
-        $raw = "";
-        while (!$body->eof()) {
-            $raw .= $body->read(102400);
-        }
-        $data = json_decode($raw, true);
+        $data = $this->makeRequest($url, true);
+
         $img = $data["plot"];
         $pos = strpos($img, ",");
         if (false === $pos) {
             throw new InvalidResponseException("Incorrect format for \"plot\" properties");
         }
         return  base64_decode(substr($img, $pos + 1));
+    }
+
+    private function makeRequest(string $url, bool $stream = false): array
+    {
+        $response = $this->client->request("GET", $url, ["stream" => $stream]);
+        $body = $response->getBody();
+
+        if (false === $stream) {
+            return json_decode($body, true);
+        }
+        $raw = "";
+        while (!$body->eof()) {
+            $raw .= $body->read(102400);
+        }
+        return json_decode($raw, true);
     }
 
     private function buildBasicUrl(int $days = 7, string $call = "heights"): string
