@@ -63,38 +63,65 @@ class API
     public function getHeights(int $days = 7): array
     {
         $url = $this->buildBasicUrl($days);
-        return $this->makeRequest($url);
+        return $this->makeRequest($url, "heights");
     }
 
     public function getImage(int $days = 7, array $params = []): string
     {
         $url = $this->buildBasicUrl($days, "heights&plot");
+
         foreach ($params as $key => $value) {
             $url .= sprintf("&%s=%s", (string)$key, urlencode((string)$value));
         }
-        $data = $this->makeRequest($url, true);
 
-        $img = $data["plot"];
-        $pos = strpos($img, ",");
-        if (false === $pos) {
-            throw new InvalidResponseException("Incorrect format for \"plot\" properties");
-        }
-        return  base64_decode(substr($img, $pos + 1));
+        $img = $this->makeRequest($url, "plot");
+
+        return  base64_decode($img[1]);
     }
 
-    private function makeRequest(string $url, bool $stream = false): array
+    private function makeRequest(string $url, string $field): array
     {
-        $response = $this->client->request("GET", $url, ["stream" => $stream]);
+        $raw = $this->getData($url);
+        return $this->parseResponse($raw, $field);
+    }
+
+    private function parseResponse(string $raw, string $field): array
+    {
+        $data = json_decode($raw, true);
+
+        if (!array_key_exists("status", $data) || 200 !== $data["status"]) {
+            throw new InvalidResponseException("Received error status from API");
+        }
+
+        if (!array_key_exists($field, $data) || empty($data[$field])) {
+            throw new InvalidResponseException(sprintf("Not found field \"%s\" in response", $field));
+        }
+
+        if ("plot" === $field) {
+            $img = $data[$field];
+            $pos = strpos($img, ",");
+
+            if (false === $pos) {
+                throw new InvalidResponseException("Incorrect format for \"plot\" property");
+            }
+            $result = explode(",", $img);
+        } else {
+            $result = $data[$field];
+        }
+
+        return $result;
+    }
+
+    private function getData(string $url): string
+    {
+        $response = $this->client->request("GET", $url, ["stream" => true]);
         $body = $response->getBody();
 
-        if (false === $stream) {
-            return json_decode($body, true);
-        }
         $raw = "";
         while (!$body->eof()) {
             $raw .= $body->read(102400);
         }
-        return json_decode($raw, true);
+        return $raw;
     }
 
     private function buildBasicUrl(int $days = 7, string $call = "heights"): string
