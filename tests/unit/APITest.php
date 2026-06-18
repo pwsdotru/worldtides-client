@@ -98,6 +98,17 @@ final class APITest extends TestCase
         $this->assertEquals("https://www.worldtides.info/api/v3?heights&key=test-key&date=2026-01-01&lat=12.000000&lon=15.000000&days=7", $url);
     }
 
+    public function testParseResponse(): void
+    {
+        $json = '{"status":200,"heights":[0,1]}';
+        $obj = new API("test-key");
+        $reflectionClass = new ReflectionClass($obj);
+        $method = $reflectionClass->getMethod("parseResponse");
+        $method->setAccessible(true);
+        $data = $method->invoke($obj, $json, "heights");
+        $this->assertEquals([0 => 0, 1 => 1], $data);
+    }
+
     protected function getPrivateProperty(object $object, string $propertyName)
     {
         $reflectionClass = new ReflectionClass($object);

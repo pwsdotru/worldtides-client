@@ -115,6 +115,12 @@ class API
     private function getData(string $url): string
     {
         $response = $this->client->request("GET", $url, ["stream" => true]);
+
+        $statusCode = (int)$response->getStatusCode();
+        if (200 !== $statusCode) {
+            throw new InvalidResponseException(sprintf("Received error code for API: %d", $statusCode));
+        }
+
         $body = $response->getBody();
 
         $raw = "";
