@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Worldtides;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Worldtides\Exception\InvalidFormatException;
 use Worldtides\Exception\EmptyArgumentException;
 use Psr\Http\Client\ClientInterface;
@@ -114,14 +115,22 @@ class API
 
     private function getData(string $url): string
     {
-        $response = $this->client->request("GET", $url, ["stream" => true]);
+        try {
+            $response = $this->client->request("GET", $url, ["stream" => true]);
 
-        $statusCode = (int)$response->getStatusCode();
+            $statusCode = (int)$response->getStatusCode();
+        } catch (ClientException $e) {
+            throw new InvalidResponseException(sprintf("Error from HTTP client: %s", $e->getMessage()));
+        }
         if (200 !== $statusCode) {
             throw new InvalidResponseException(sprintf("Received error code for API: %d", $statusCode));
         }
 
         $body = $response->getBody();
+
+        if (empty($body)) {
+            throw new InvalidResponseException(sprintf("Empty response from API"));
+        }
 
         $raw = "";
         while (!$body->eof()) {

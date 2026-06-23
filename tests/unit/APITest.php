@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace unit;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 use Worldtides\API;
 use ReflectionClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -98,7 +102,7 @@ final class APITest extends TestCase
         $this->assertEquals("https://www.worldtides.info/api/v3?heights&key=test-key&date=2026-01-01&lat=12.000000&lon=15.000000&days=7", $url);
     }
 
-    public function testParseResponse(): void
+    public function testParseResponseSuccess(): void
     {
         $json = '{"status":200,"heights":[0,1]}';
         $obj = new API("test-key");
@@ -107,6 +111,36 @@ final class APITest extends TestCase
         $method->setAccessible(true);
         $data = $method->invoke($obj, $json, "heights");
         $this->assertEquals([0 => 0, 1 => 1], $data);
+    }
+
+    public function testParseResponseFail(): void
+    {
+        $json = '{"heights":[0,1]}';
+        $obj = new API("test-key");
+
+        $this->expectException("Worldtides\Exception\InvalidResponseException");
+
+        $reflectionClass = new ReflectionClass($obj);
+        $method = $reflectionClass->getMethod("parseResponse");
+        $method->setAccessible(true);
+        $method->invoke($obj, $json, "heights");
+    }
+
+    public function testGetDataFail(): void
+    {
+        $response = new Response(404);
+        $mock = new MockHandler([$response]);
+        $handler = HandlerStack::create($mock);
+        $client = new Client(["handler" => $handler]);
+
+        $obj = new API("test-key", $client);
+
+        $this->expectException("Worldtides\Exception\InvalidResponseException");
+
+        $reflectionClass = new ReflectionClass($obj);
+        $method = $reflectionClass->getMethod("getData");
+        $method->setAccessible(true);
+        $method->invoke($obj, "http://test.com");
     }
 
     protected function getPrivateProperty(object $object, string $propertyName)
