@@ -48,3 +48,16 @@ Array
 ````
 Where **dt** and **date** are time (in unix timestamp and string format). 
 **height** is height of water in this time. 
+
+
+````php
+use Worldtides\API;
+
+$tides = new API('apikey');
+
+$tides->setDate(date("Y-m-d"))
+    ->setPoint("7.8333", "98.4167");
+
+$img = $tides->$tides->getImage(7);
+````
+In **$img** have binary data of PNG image with graph for 7 days.
