@@ -61,6 +61,17 @@ class API
         return $this;
     }
 
+    /**
+    * Set Interval length in seconds.
+    * @param int $length
+    * @return self
+    */
+    public function setLength(int $length): self
+    {
+            $this->params["length"] = $length;
+            return $this;
+    }
+
     public function getHeights(int $days = 7): array
     {
         $url = $this->buildBasicUrl($days);

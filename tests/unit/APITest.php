@@ -73,6 +73,23 @@ final class APITest extends TestCase
         $this->assertEqualsWithDelta($expected_lon, $params["lon"], 0.01);
     }
 
+    public static function setLengthProvider(): array
+    {
+        return [
+            [60],
+        ];
+    }
+
+    #[DataProvider('setLengthProvider')]
+    public function testSetLength(int $length): void
+    {
+        $obj = new API("empty");
+        $obj->setLength($length);
+        $params = $this->getPrivateProperty($obj, "params");
+        $this->assertArrayHasKey("length", $params);
+        $this->assertEquals($length, $params["length"]);
+    }
+
     public static function setPointErrorProvider(): array
     {
         return [
