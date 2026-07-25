@@ -21,7 +21,7 @@ $tides = new API('apikey');
 $tides->setDate(date("Y-m-d"))
     ->setPoint("7.8333", "98.4167");
 
-$heights = $tides->$tides->getHeights(7);
+$heights = $tides->getHeights(7);
 ````
 
 In **$heights** have array of points for next 7 days.
@@ -58,6 +58,6 @@ $tides = new API('apikey');
 $tides->setDate(date("Y-m-d"))
     ->setPoint("7.8333", "98.4167");
 
-$img = $tides->$tides->getImage(7);
+$img = $tides->getImage(7);
 ````
 In **$img** have binary data of PNG image with graph for 7 days.
