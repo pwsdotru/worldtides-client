@@ -62,6 +62,17 @@ class API
     }
 
     /**
+    * Set step size in seconds for heights.
+    * @param int $step
+    * @return self
+    */
+    public function setStep(int $step): self
+    {
+        $this->params["step"] = $step;
+        return $this;
+    }
+
+    /**
     * Set Interval length in seconds.
     * @param int $length
     * @return self
