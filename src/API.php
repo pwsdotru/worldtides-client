@@ -161,6 +161,29 @@ class API
         return $raw;
     }
 
+    private function buildUrl(int $days = 7, string $call = "heights"): string
+    {
+        $url = $this->buildBasicUrl($days, $call);
+        $extra = $this->buildExtraParams();
+        return $url . $extra;
+    }
+
+    private function buildExtraParams(): string
+    {
+        $params = [
+            "length" => "%d",
+            "step" => "%d",
+        ];
+        $result = "";
+
+        foreach ($params as $key => $placeholder) {
+            if (array_key_exists($key, $this->params) && !empty($this->params[$key])) {
+                $result .= "&" . sprintf($placeholder, $this->params[$key]);
+            }
+        }
+        return $result;
+    }
+
     private function buildBasicUrl(int $days = 7, string $call = "heights"): string
     {
         if (empty($this->params["date"])) {
