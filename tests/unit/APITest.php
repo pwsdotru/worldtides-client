@@ -136,6 +136,18 @@ final class APITest extends TestCase
         $this->assertEquals("https://www.worldtides.info/api/v3?heights&key=test-key&date=2026-01-01&lat=12.000000&lon=15.000000&days=7", $url);
     }
 
+    public function testBuildExtraParams(): void
+    {
+        $obj = new API("test-key");
+        $obj->setStep(555)->setLength(100);
+        $reflectionClass = new ReflectionClass($obj);
+        $method = $reflectionClass->getMethod("buildExtraParams");
+        $method->setAccessible(true);
+        $extra = $method->invoke($obj);
+        $this->assertStringContainsString("step=555", $extra);
+        $this->assertStringContainsString("length=100", $extra);
+    }
+
     public function testParseResponseSuccess(): void
     {
         $json = '{"status":200,"heights":[0,1]}';

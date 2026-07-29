@@ -178,7 +178,7 @@ class API
 
         foreach ($params as $key => $placeholder) {
             if (array_key_exists($key, $this->params) && !empty($this->params[$key])) {
-                $result .= "&" . sprintf($placeholder, $this->params[$key]);
+                $result  .=  sprintf("&%s=" . $placeholder, $key, $this->params[$key]);
             }
         }
         return $result;
