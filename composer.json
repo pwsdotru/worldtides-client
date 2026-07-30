@@ -30,6 +30,7 @@
     "test": "vendor/bin/phpunit -c phpunit.xml",
     "style:check": "vendor/bin/phpcs",
     "style:fix": "vendor/bin/phpcbf",
+    "check": "php check-client.php",
     "git:prepush": [
       "@style:check",
       "@test"
