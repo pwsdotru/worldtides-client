@@ -59,7 +59,7 @@ jobs:
           run: composer install --ansi --prefer-dist --no-interaction --no-progress
 
       -   name: Create ENV File
-          run: echo 'apikey="${{ secrets.GITHUB_TOKEN }}"' > .env
+          run: echo apikey = \"${{ secrets.GITHUB_TOKEN }}\" > .env
 
       -   name: Run samples
           run: composer check
