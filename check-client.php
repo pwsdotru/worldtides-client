@@ -10,6 +10,11 @@ echo("Starting...\n");
 
 $conf = parse_ini_file(__DIR__ . "/.env");
 
+if ($conf === false) {
+    echo("Error read .env file");
+    exit(1);
+}
+
 $tides = new API($conf["apikey"]);
 
 $tides->setDate(date("Y-m-d"))

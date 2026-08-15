@@ -19,7 +19,9 @@
   },
   "require-dev": {
     "phpunit/phpunit": "12.*",
-    "squizlabs/php_codesniffer": "4.*"
+    "squizlabs/php_codesniffer": "4.*",
+    "phpstan/phpstan": "^2.2",
+    "phpstan/phpstan-phpunit": "^2.0"
   },
   "autoload": {
     "psr-4": {
@@ -31,6 +33,7 @@
     "style:check": "vendor/bin/phpcs",
     "style:fix": "vendor/bin/phpcbf",
     "check": "php check-client.php",
+    "analyse": "vendor/bin/phpstan analyse --ansi",
     "git:prepush": [
       "@style:check",
       "@test"

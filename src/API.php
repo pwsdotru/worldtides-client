@@ -16,6 +16,7 @@ class API
     private const ENDPOINT = "https://www.worldtides.info/api/v3";
 
     private ?ClientInterface $client = null;
+    /** @var array <string, mixed> */
     private array $params = [];
 
     public function __construct(protected readonly string $apikey, ?ClientInterface $client = null)
@@ -83,15 +84,24 @@ class API
             return $this;
     }
 
+    /**
+    * @param int $days
+    * @return array <int, mixed>
+    */
     public function getHeights(int $days = 7): array
     {
-        $url = $this->buildBasicUrl($days);
+        $url = $this->buildUrl($days);
         return $this->makeRequest($url, "heights");
     }
 
+    /**
+    * @param int $days
+    * @param array<string, mixed> $params
+    * @return string
+    */
     public function getImage(int $days = 7, array $params = []): string
     {
-        $url = $this->buildBasicUrl($days, "heights&plot");
+        $url = $this->buildUrl($days, "heights&plot");
 
         foreach ($params as $key => $value) {
             $url .= sprintf("&%s=%s", (string)$key, urlencode((string)$value));
@@ -102,12 +112,23 @@ class API
         return  base64_decode($img[1]);
     }
 
+    /**
+    * @param string $url
+    * @param string $field
+    * @return array <int, mixed>
+    */
     private function makeRequest(string $url, string $field): array
     {
         $raw = $this->getData($url);
         return $this->parseResponse($raw, $field);
     }
 
+    /**
+    * @param string $raw
+    * @param string $field
+    * @return array <int, mixed>
+    * @throws InvalidResponseException
+    */
     private function parseResponse(string $raw, string $field): array
     {
         $data = json_decode($raw, true);
