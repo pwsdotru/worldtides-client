@@ -22,6 +22,9 @@ final class APITest extends TestCase
     }
 
 
+    /**
+     * @return array <int, list<mixed>>
+     */
     public static function setDateProvider(): array
     {
         return [
@@ -39,6 +42,9 @@ final class APITest extends TestCase
         $this->assertEquals($expected, $params["date"]);
     }
 
+    /**
+     * @return array <int, list<mixed>>
+     */
     public static function setDateErrorProvider(): array
     {
         return [
@@ -54,6 +60,9 @@ final class APITest extends TestCase
         $obj->setDate($date);
     }
 
+    /**
+     * @return array <int, list<mixed>>
+     */
     public static function setPointProvider(): array
     {
         return [
@@ -73,6 +82,9 @@ final class APITest extends TestCase
         $this->assertEqualsWithDelta($expected_lon, $params["lon"], 0.01);
     }
 
+    /**
+     * @return array <int, list<mixed>>
+     */
     public static function setStepProvider(): array
     {
         return [
@@ -90,6 +102,9 @@ final class APITest extends TestCase
         $this->assertEquals($step, $params["step"]);
     }
 
+    /**
+     * @return array <int, list<mixed>>
+     */
     public static function setLengthProvider(): array
     {
         return [
@@ -107,6 +122,9 @@ final class APITest extends TestCase
         $this->assertEquals($length, $params["length"]);
     }
 
+    /**
+     * @return array <int, list<mixed>>
+     */
     public static function setPointErrorProvider(): array
     {
         return [
@@ -189,6 +207,9 @@ final class APITest extends TestCase
         $method->invoke($obj, "http://test.com");
     }
 
+    /**
+     * @return mixed
+     */
     protected function getPrivateProperty(object $object, string $propertyName)
     {
         $reflectionClass = new ReflectionClass($object);
