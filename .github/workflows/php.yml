@@ -40,6 +40,26 @@ jobs:
 
       -   name: Run phpunit
           run: composer test
+  phpstan:
+    name: PHPStan ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
+    steps:
+      -   name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ matrix.php }}
+
+      -   uses: actions/checkout@v2
+
+      -   name: Composer Install
+          run: composer install --ansi --prefer-dist --no-interaction --no-progress
+
+      -   name: Run phpstan
+          run: composer analyse
   samples:
     name: Check samples
     runs-on: ubuntu-latest
