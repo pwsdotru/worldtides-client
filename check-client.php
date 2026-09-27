@@ -6,6 +6,8 @@ require_once(__DIR__ . "/vendor/autoload.php");
 
 use Worldtides\API;
 
+$errors = 0;
+
 echo("Starting...\n");
 
 $conf = parse_ini_file(__DIR__ . "/.env");
@@ -22,14 +24,25 @@ $tides->setDate(date("Y-m-d"))
 
 echo("Make request for Image\n");
 
-$result = $tides->getImage(7, ["timemode" => 24]);
-file_put_contents("test.png", $result);
+try {
+    $result = $tides->getImage(7, ["timemode" => 24]);
+    file_put_contents("test.png", $result);
 
-echo("Image saved to \"test.png\"\n");
+    echo("Image saved to \"test.png\"\n");
+} catch (Exception $e) {
+    echo("\nException: " . $e->getMessage() . "\n");
+    $errors++;
+}
 
-echo("Make request for Heights\n");
-$result = $tides->getHeights(7);
+try {
+    echo("Make request for Heights\n");
+    $result = $tides->getHeights(7);
 
-print_r($result);
+    print_r($result);
+} catch (Exception $e) {
+    echo("\nException: " . $e->getMessage() . "\n");
+    $errors++;
+}
 
 echo("\nDone\n");
+exit($errors);

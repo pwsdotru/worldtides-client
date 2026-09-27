@@ -36,7 +36,8 @@
     "analyse": "vendor/bin/phpstan analyse --ansi",
     "git:prepush": [
       "@style:check",
-      "@test"
+      "@test",
+      "@analyse"
     ]
   }
 }
