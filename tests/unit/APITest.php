@@ -149,7 +149,6 @@ final class APITest extends TestCase
         $obj->setPoint("12", "15")->setDate("2026-01-01");
         $reflectionClass = new ReflectionClass($obj);
         $method = $reflectionClass->getMethod("buildBasicUrl");
-        $method->setAccessible(true);
         $url = $method->invoke($obj);
         $this->assertEquals("https://www.worldtides.info/api/v3?heights&key=test-key&date=2026-01-01&lat=12.000000&lon=15.000000&days=7", $url);
     }
@@ -160,7 +159,6 @@ final class APITest extends TestCase
         $obj->setStep(555)->setLength(100);
         $reflectionClass = new ReflectionClass($obj);
         $method = $reflectionClass->getMethod("buildExtraParams");
-        $method->setAccessible(true);
         $extra = $method->invoke($obj);
         $this->assertStringContainsString("step=555", $extra);
         $this->assertStringContainsString("length=100", $extra);
@@ -172,7 +170,6 @@ final class APITest extends TestCase
         $obj = new API("test-key");
         $reflectionClass = new ReflectionClass($obj);
         $method = $reflectionClass->getMethod("parseResponse");
-        $method->setAccessible(true);
         $data = $method->invoke($obj, $json, "heights");
         $this->assertEquals([0 => 0, 1 => 1], $data);
     }
@@ -186,7 +183,6 @@ final class APITest extends TestCase
 
         $reflectionClass = new ReflectionClass($obj);
         $method = $reflectionClass->getMethod("parseResponse");
-        $method->setAccessible(true);
         $method->invoke($obj, $json, "heights");
     }
 
@@ -203,7 +199,6 @@ final class APITest extends TestCase
 
         $reflectionClass = new ReflectionClass($obj);
         $method = $reflectionClass->getMethod("getData");
-        $method->setAccessible(true);
         $method->invoke($obj, "http://test.com");
     }
 
@@ -214,7 +209,6 @@ final class APITest extends TestCase
     {
         $reflectionClass = new ReflectionClass($object);
         $property = $reflectionClass->getProperty($propertyName);
-        $property->setAccessible(true);
         return $property->getValue($object);
     }
 }
