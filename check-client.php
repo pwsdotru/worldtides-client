@@ -44,5 +44,14 @@ try {
     $errors++;
 }
 
+try {
+    echo("Make request for Min and Max\n");
+    $result = $tides->getMinMax(7);
+
+    print_r($result);
+} catch (Exception $e) {
+    echo("\nException: " . $e->getMessage() . "\n");
+    $errors++;
+}
 echo("\nDone\n");
 exit($errors);

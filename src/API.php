@@ -20,6 +20,9 @@ class API
     private ?ClientInterface $client = null;
     /** @var array <string, mixed> */
     private array $params = [];
+    /** @var array <int, array<int, mixed>> */
+    private array $heights = [];
+    
 
     public function __construct(protected readonly string $apikey, ?ClientInterface $client = null)
     {
@@ -92,8 +95,11 @@ class API
     */
     public function getHeights(int $days = 7): array
     {
-        $url = $this->buildUrl($days);
-        return $this->makeRequest($url, "heights");
+        if (empty($this->heights)) {
+            $url = $this->buildUrl($days);
+            return $this->makeRequest($url);
+        }
+        return $this->heights;
     }
 
     /**
@@ -115,11 +121,23 @@ class API
     }
 
     /**
+    * @param int $days
+    * @return array <string, array<int, mixed>>
+    */
+    public function getMinMax(int $days = 7): array
+    {
+        $result = ['min' => [], 'max' => []];
+        if (empty($this->heights)) {
+            $this->getHeights($days);
+        }
+        return $result;
+    }
+    /**
     * @param string $url
     * @param string $field
     * @return array <int, mixed>
     */
-    private function makeRequest(string $url, string $field): array
+    private function makeRequest(string $url, string $field = "heights"): array
     {
         $raw = $this->getData($url);
         return $this->parseResponse($raw, $field);
@@ -143,6 +161,10 @@ class API
             throw new InvalidResponseException(sprintf("Not found field \"%s\" in response", $field));
         }
 
+        if (array_key_exists("heights", $data) && !empty($data["heights"])) {
+            $this->heights = $data["heights"];
+        }
+
         if ("plot" === $field) {
             $img = $data[$field];
             $pos = strpos($img, ",");
@@ -152,7 +174,7 @@ class API
             }
             $result = explode(",", $img);
         } else {
-            $result = $data[$field];
+            $result = $this->heights;
         }
 
         return $result;
