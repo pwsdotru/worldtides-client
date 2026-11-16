@@ -22,7 +22,7 @@ class API
     private array $params = [];
     /** @var array <int, array<int, mixed>> */
     private array $heights = [];
-    
+
 
     public function __construct(protected readonly string $apikey, ?ClientInterface $client = null)
     {
