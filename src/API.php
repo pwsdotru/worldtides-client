@@ -20,7 +20,7 @@ class API
     private ?ClientInterface $client = null;
     /** @var array <string, mixed> */
     private array $params = [];
-    /** @var array <int, array<int, mixed>> */
+    /** @var array <int, array<string, mixed>> */
     private array $heights = [];
 
 
@@ -126,11 +126,10 @@ class API
     */
     public function getMinMax(int $days = 7): array
     {
-        $result = ['min' => [], 'max' => []];
         if (empty($this->heights)) {
             $this->getHeights($days);
         }
-        return $result;
+        return $this->calculateExtremum();
     }
     /**
     * @param string $url
@@ -254,5 +253,24 @@ class API
             $this->params["lon"],
             $days
         );
+    }
+
+    /**
+    * @return array <string, array<int, mixed>>
+    **/
+    private function calculateExtremum(): array
+    {
+        $key = "height";
+        $result = ["min" => [], "max" => []];
+        $cnt = count($this->heights) - 1;
+        for ($i = 1; $i < $cnt; $i++) {
+            if ($this->heights[$i - 1][$key] < $this->heights[$i][$key] && $this->heights[$i + 1][$key] < $this->heights[$i][$key]) {
+                $result["max"][] = $this->heights[$i];
+            }
+            if ($this->heights[$i - 1][$key] > $this->heights[$i][$key] && $this->heights[$i + 1][$key] > $this->heights[$i][$key]) {
+                $result["min"][] = $this->heights[$i];
+            }
+        }
+        return $result;
     }
 }
